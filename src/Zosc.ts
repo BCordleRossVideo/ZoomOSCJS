@@ -4,9 +4,9 @@ import {Server,Client, ArgumentType} from 'node-osc';
 import { User } from "./User";
 import { UserCommands } from "./consts";
 export default class Zosc extends EventEmitter {
-    transmissionIp:string = "127.0.0.1";
+    transmissionIp:string = "10.10.80.21";
     transmissionPort:number = 9090;
-    receivingport:number = 8081;
+    receivingport:number = 1234;
     //To be Implmented 
     currentMeeting:Meeting;
     oscServer:Server;
@@ -19,16 +19,17 @@ export default class Zosc extends EventEmitter {
         this.transmissionPort = transmissionPort;
         this.receivingport = receivingport;
         this.users = {};
-        this.oscServer = new Server(this.receivingport,"127.0.0.1");
+        this.oscServer = new Server(this.receivingport,"0.0.0.0", () => {
+            console.log('OSC Server is listening');
+        });
         this.oscClient = new Client(this.transmissionIp,this.transmissionPort);
-        this.oscServer.on("message",(message: [string, ...ArgumentType[]])=>{
+        this.oscServer.on("message",(message)=>{
             this.handleUpdate(message);
         })
     }
-    
 
     handleUpdate(message: [string, ...ArgumentType[]]){
-        
+        console.log("Message Received: " + message);
         let spliturl = message[0].split("/");
         let prefix = spliturl[1]; 
         //handle user Actions
@@ -48,6 +49,7 @@ export default class Zosc extends EventEmitter {
             }
         }
     }
+
     sendCommand(command,user,data?){
         let oscURL = "/zoom/zoomID/"+command 
         if(data != undefined){
@@ -57,6 +59,7 @@ export default class Zosc extends EventEmitter {
         }
     
     }
+
     sendMeCommand(command,data?){
         let oscURL = "/zoom/me/"+command 
         if(data != undefined){
@@ -65,6 +68,7 @@ export default class Zosc extends EventEmitter {
             this.oscClient.send(oscURL);
         }
     }
+
     sendZoomCommand(command,data?){
         let oscURL = "/zoom/"+command
         if(data != undefined){
@@ -74,6 +78,7 @@ export default class Zosc extends EventEmitter {
         }
 
     }
+    
     joinMeetingwithID(meetingID:string){
         	
     }

@@ -6,8 +6,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "watch": "tsc -w",
-    "example": "node ./dist/exampel.js",
-    "prepublish": "tsc"
+    "example": "nodemon --exec ts-node src/examples/example.ts",
+    "prepublish": "tsc",
+    "start": "nodemon --exec ts-node src/examples/botest.ts",
+    "servertest": "nodemon --exec ts-node src/examples/servertest.ts"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,8 @@
   "devDependencies": {
     "@types/node": "^18.0.3",
     "@types/node-osc": "^6.0.0",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {

@@ -49,7 +49,6 @@ export class User extends EventEmitter {
                 break;
             case "mute":
                 this.audioStatus = false;
-                console.log("Received Mute");
                 this.emit("mute");
                 break;
             case "unmute":

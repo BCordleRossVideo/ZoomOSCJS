@@ -25,6 +25,6 @@ zosc.on("message",(message)=>{
 );
 
 zosc.oscServer.on("message",(message)=>{
-   console.log("Message Received: " + message);
+   //console.log("Message Received: " + message);
    zosc.handleUpdate(message);
 })

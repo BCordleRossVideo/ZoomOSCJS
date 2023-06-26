@@ -29,7 +29,7 @@ export default class Zosc extends EventEmitter {
     }
 
     handleUpdate(message: [string, ...ArgumentType[]]){
-        console.log("Message Received: " + message);
+        console.log("Message Received Zosc.ts: " + message);
         let spliturl = message[0].split("/");
         let prefix = spliturl[1]; 
         //handle user Actions

@@ -1,8 +1,9 @@
 import {EventEmitter }from "events";
-import { Meeting } from "./meeting";
+import { Meeting } from "./Meeting";
 import {Server,Client, ArgumentType} from 'node-osc';
 import { User } from "./User";
 import { UserCommands } from "./consts";
+import * as fs from 'fs';
 export default class Zosc extends EventEmitter {
     transmissionIp:string = "10.10.80.21";
     transmissionPort:number = 9090;
@@ -45,9 +46,10 @@ export default class Zosc extends EventEmitter {
                 this.emit("newUser",this.users[zoomID]);
             }
             if(UserCommands.includes(action)){
-                this.users[zoomID].handleUpdate(action,message);	
+                this.users[zoomID].handleUpdate(action,message);
             }
         }
+        //this.printAllUsers();
     }
 
     sendCommand(command,user,data?){
@@ -167,4 +169,28 @@ export default class Zosc extends EventEmitter {
     broadcastToBreakout(message){
         this.sendZoomCommand("broadcastToBreakout",message);
     }
+    printAllUsers() {
+        // Create an array from the users object with zoomID as key
+        const usersArray = Object.entries(this.users).map(([zoomID, user]) => ({zoomID, user}));
+    
+        // Log a JSON string of the array
+        console.log(JSON.stringify(usersArray, null, 2));
+    }
+    printAllUsersToFile() {
+        // Create an array from the users object with zoomID as key
+        const usersArray = Object.entries(this.users).map(([zoomID, user]) => ({zoomID, user}));
+    
+        // Convert to JSON
+        const jsonData = JSON.stringify(usersArray, null, 2);
+    
+        // Write to a file
+        fs.writeFile('users.json', jsonData, (err) => {
+            if (err) {
+                console.log('Error writing file', err)
+            } else {
+                console.log('Successfully wrote file')
+            }
+        });
+    }
+    
 }

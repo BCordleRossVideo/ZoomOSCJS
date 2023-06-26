@@ -1,30 +1,40 @@
 import Zosc from "../Zosc";	// import the class
-import {Server,Client, ArgumentType} from 'node-osc';
+import {Server,Client, ArgumentType, Message} from 'node-osc';
 import {EventEmitter }from "events";
 import { User } from "../User";
 import { UserCommands } from "../consts";
+import * as fs from 'fs';
 
 let zosc = new Zosc("10.10.80.21",9090,1234);	// create a new instance of the ZOSC class
 
 console.log("App Started.");
 
+zosc.oscServer.on('message', function (msg, rinfo){
+   console.log('Data:', msg);
+   //console.log('From:', rinfo);
+   zosc.handleUpdate(msg);  
+});
+
 zosc.on("newUser",(user)=>{
    //Log the new user
-   console.log("New user") 
-})
+   console.log("New user: " + zosc.printAllUsers());
+});
 
-zosc.on("mute",(user)=>{
-   console.log("User "+user.zoomID+" is now muted")
-})
+zosc.oscServer.on('message', function(){
+   zosc.printAllUsers();
+});
 
-zosc.sendMeCommand("videoOn");
+zosc.on("activeSpeaker", function() {
+   // Add what you want to do when the activeSpeaker event is emitted here.
+   console.log("Active speaker event has been emitted!");
+});
 
-zosc.on("message",(message)=>{
-      console.log(message);
-   }
-);
+zosc.on("mute", function() {
+   // Add what you want to do when the activeSpeaker event is emitted here.
+   console.log("Mute event has been emitted!");
+});
 
-zosc.oscServer.on("message",(message)=>{
-   //console.log("Message Received: " + message);
-   zosc.handleUpdate(message);
-})
+zosc.on("emojiChanged", function() {
+   console.log("Emoji is: ");
+});
+// zosc.sendMeCommand("videoOn");

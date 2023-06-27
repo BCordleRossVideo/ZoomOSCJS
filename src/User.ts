@@ -53,12 +53,12 @@ export class User extends EventEmitter {
             case "mute":
                 this.audioStatus = false;
                 console.log('Emitted mute for ' + this.userName);
-                this.emit("mute");
+                this.emit("mute", this.zoomID);
                 break;
             case "unMute":
                 this.audioStatus = true;
                 console.log('Emitted UNmute for ' + this.userName);
-                this.emit("unmute");
+                this.emit("unmute", this.zoomID);
                 break;            
             case "handRaised":
                 this.handRaised = true;

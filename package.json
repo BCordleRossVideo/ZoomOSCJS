@@ -29,6 +29,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "node-osc": "^8.0.3"
   },

@@ -1,1 +1,1 @@
-export const UserCommands: string[] = ["chat","userNameChanged","videoOn","videoOff","mute","unmute","handRaised","handLowered","emojiChanged","isSpeaking","stoppedSpeaking","activeSpeaker","askedQuestion","list"];
+export const UserCommands: string[] = ["chat","userNameChanged","videoOn","videoOff","mute","unMute","handRaised","handLowered","emojiChanged","isSpeaking","stoppedSpeaking","activeSpeaker","askedQuestion","list"];

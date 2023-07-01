@@ -16,6 +16,7 @@ export class User extends EventEmitter {
     handRaised:boolean = false;
     isSpeaking:boolean = false;
     zosc:Zosc|Ziso;
+    lastSpoke: number = 0;
     constructor(zosc:Zosc,zoomID:number,userName:string) {
         super();
         this.zoomID = zoomID;
@@ -30,10 +31,12 @@ export class User extends EventEmitter {
             //TODO: when does this happen ? 
             console.log("zoomID changed from",this.zoomID,"to",data[3],"create a new user");
         }
-        //todo should we always return this ? 
+        //todo should we always return this ?
+        console.log("Type: " + type);
         switch (type) {
             case "chat":
                 this.emit("chat",data[5]);
+                console.log("Chat" + this.chat);
                 break;
             case "userNameChanged":
                 this.userName = data[5];
@@ -49,16 +52,20 @@ export class User extends EventEmitter {
                 break;
             case "mute":
                 this.audioStatus = false;
-                console.log("Received Mute");
-                this.emit("mute");
+                console.log('Emitted mute for ' + this.userName);
+                this.emit("mute", this.zoomID);
                 break;
-            case "unmute":
+            case "unMute":
                 this.audioStatus = true;
-                this.emit("unmute");
-                break;
+                console.log('Emitted UNmute for ' + this.userName);
+                this.emit("unmute", this.zoomID);
+                break;            
             case "handRaised":
                 this.handRaised = true;
                 this.emit("handRaised");
+                break;
+            case "audioStatus":
+                this.audioStatus = true;
                 break;
             case "handLowered":
                 this.handRaised = false;
@@ -233,6 +240,24 @@ export class User extends EventEmitter {
     }
     sendCommand(command,data?){
         this.zosc.sendCommand(command,this,data);
+    }
+    toJSON() {
+        return {
+            targetIndex: this.targetIndex,
+            userName: this.userName,
+            galleryIndex: this.galleryIndex,
+            zoomID: this.zoomID,
+            targetCount: this.targetCount,
+            listCount: this.listCount,
+            userRole: this.userRole,
+            userStatus: this.userStatus,
+            videoStatus: this.videoStatus,
+            audioStatus: this.audioStatus,
+            handRaised: this.handRaised,
+            isSpeaking: this.isSpeaking,
+            lastSpoke: this.lastSpoke,
+            // Do not include zosc property
+        };
     }
 }
 

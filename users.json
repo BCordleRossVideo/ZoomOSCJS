@@ -1,0 +1,20 @@
+[
+  {
+    "zoomID": "16778240",
+    "user": {
+      "targetIndex": -1,
+      "userName": "Bo Name 2",
+      "galleryIndex": -1,
+      "zoomID": 16778240,
+      "targetCount": -1,
+      "listCount": -1,
+      "userRole": 0,
+      "userStatus": 0,
+      "videoStatus": false,
+      "audioStatus": false,
+      "handRaised": false,
+      "isSpeaking": false,
+      "lastSpoke": 0
+    }
+  }
+]

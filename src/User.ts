@@ -1,4 +1,4 @@
-import {EventEmitter }from "events";
+import { EventEmitter }from "events";
 import Ziso from "./Ziso";
 import Zosc  from "./Zosc";
 
@@ -265,7 +265,7 @@ export class User extends EventEmitter {
 
 export enum userRole{
     user,
-    atendee,
+    attendee,
     host,
     cohost}
 

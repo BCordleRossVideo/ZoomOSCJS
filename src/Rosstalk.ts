@@ -43,7 +43,7 @@ Rosstalk.prototype.connect = function connect() {
     this.connection = net.connect(this.port, this.host);
     
     this.connection.on('connect', () => {
-      console.log('Connected');
+      console.log('Rosstalk Connected.');
       // You can safely call _send or other methods that use connection.write here
     });
   
@@ -81,7 +81,15 @@ Rosstalk.prototype.trans = function trans(me, auto) {
   var cmd = auto ? 'MEAUTO' : 'MECUT';
 
   this._send(cmd + ' ' + me);
+
+  console.log('Switcher sent ' + cmd + ' ' + me);
 };
+
+/** 
+ * TODO: XPT to PGM or PVW
+ * function xpt(ME, BUS, SRC) 
+ * 
+ */
 
 /**
  *  Fire a custom control

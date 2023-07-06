@@ -10,7 +10,7 @@
     "prepublish": "tsc",
     "start": "nodemon --exec ts-node src/examples/botest.ts",
     "servertest": "nodemon --exec ts-node src/examples/servertest.ts",
-    "switchertest": "nodemon --exec ts-node src/examples/activeSpeaker.ts"
+    "switchertest": "nodemon --exec ts-node src/examples/boActiveSpeaker.ts"
   },
   "repository": {
     "type": "git",

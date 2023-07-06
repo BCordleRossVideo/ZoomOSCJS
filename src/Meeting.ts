@@ -1,4 +1,4 @@
-import {EventEmitter }from "events";
+import { EventEmitter }from "events";
 
 export class Meeting extends EventEmitter {
     constructor(userName:string) {

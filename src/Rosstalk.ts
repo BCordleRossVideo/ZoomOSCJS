@@ -92,7 +92,7 @@ Rosstalk.prototype.trans = function trans(me, auto) {
  */
 
 Rosstalk.prototype.xpt = function xpt(ME, BUS, SRC) {
-  var cmd = 'XPT ' + ME + ' ' + BUS + ' ' + SRC;
+  var cmd = 'XPT ' + 'ME:' + ME + ':' + BUS + ':' + SRC;
   console.log('Switcher sent ' + cmd);
   this._send(cmd);
 }

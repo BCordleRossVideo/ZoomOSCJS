@@ -1,4 +1,4 @@
-import {EventEmitter }from "events";
+import { EventEmitter }from "events";
 import { Meeting } from "./Meeting";
 import {Server,Client, ArgumentType} from 'node-osc';
 import { User } from "./User";

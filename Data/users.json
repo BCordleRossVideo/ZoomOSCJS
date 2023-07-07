@@ -1,0 +1,19 @@
+[
+  {
+    "targetIndex": -1,
+    "userName": "Bo Cordle",
+    "galleryIndex": -1,
+    "zoomID": 16778240,
+    "targetCount": 0,
+    "listCount": 1,
+    "userRole": 1,
+    "userStatus": 1,
+    "videoStatus": 1,
+    "audioStatus": true,
+    "handRaised": 0,
+    "isSpeaking": false,
+    "videoInput": 1,
+    "lastSpoke": "19:00:00:000",
+    "lastSwitch": "19:00:00:000"
+  }
+]

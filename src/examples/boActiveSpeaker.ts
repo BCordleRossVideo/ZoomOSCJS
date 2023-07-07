@@ -1,6 +1,8 @@
 import Zosc from '../Zosc';
 const Rosstalk = require("../Rosstalk");
+const Dashboard = require("../Dashboard");
 import { SpeakerManager } from '../SpeakerManager';
+import ZoscHttp from '../ZoscHttp';
 
 const switcher = new Rosstalk({
     host: '10.10.80.51' // switcher ip
@@ -8,9 +10,19 @@ const switcher = new Rosstalk({
 
 switcher.connect();
 
+const dashboard = new Dashboard({
+    host: '127.0.0.1' // dashboard ip
+});
+
+dashboard.connect();
+
 var zosc = new Zosc('10.10.80.21', 9090, 1234);
 
 const speakerManager = new SpeakerManager(zosc, 1000);
+
+var zoscHttp = new ZoscHttp(zosc, 3000);
+
+zosc.list();
 
 zosc.on("newUser",(user)=>{
     user.on("activeSpeaker",()=>{
@@ -21,6 +33,12 @@ zosc.on("newUser",(user)=>{
         // console.log("User: " + JSON.stringify(userCopy, null, 2));
         speakerManager.requestSwitch(user.zoomID);
     });
+    user.on("userUpdated",(user)=>{
+        console.log("User Updated received for " + user.userName);
+        zosc.printAllUsers();
+        zosc.printAllUsersToFile();
+        dashboard.send(zosc.JSONAllUsers());
+    });
     if (user.zoomID == 16778240) {
         user.videoInput = 1;
         console.log("User is Bo! " + user.zoomID + " " + user.userName + " " + user.videoInput);
@@ -30,6 +48,11 @@ zosc.on("newUser",(user)=>{
         console.log("User is Bo Phone! " + user.zoomID + " " + user.userName + " " + user.videoInput);
     } 
    });
+
+zosc.on("usersUpdated",()=>{
+    zosc.list();
+    dashboard.send(zosc.JSONAllUsers());
+});
 
 speakerManager.on('triggerSwitch', (user) => {
     if (user.videoInput !== null) {

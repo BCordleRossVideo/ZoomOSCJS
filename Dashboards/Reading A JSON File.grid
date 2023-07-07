@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><abs contexttype="opengear" id="_top">
+   <meta>
+      <params>
+         <param access="1" maxlength="0" name="Data URL" oid="Data_URL" stateless="true" type="STRING" value="" widget="text"/>
+         <param access="1" name="Structured Data" oid="struct-data" stateless="true" type="STRUCT_ARRAY" widget="table">
+            <value>
+               <subparam access="1" constrainttype="INT_NULL" name="targetIndex" precision="0" suboid="targetIndex" type="INT32" value="-1" widget="default"/>
+               <subparam access="1" maxlength="0" name="userName" suboid="userName" type="STRING" value="Bo Cordle" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="galleryIndex" precision="0" suboid="galleryIndex" type="INT32" value="-1" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="zoomID" precision="0" suboid="zoomID" type="INT32" value="16778240" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="targetCount" precision="0" suboid="targetCount" type="INT32" value="-1" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="listCount" precision="0" suboid="listCount" type="INT32" value="-1" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="userRole" precision="0" suboid="userRole" type="INT32" value="0" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="userStatus" precision="0" suboid="userStatus" type="INT32" value="0" widget="default"/>
+               <subparam access="1" constrainttype="INT_CHOICE" name="videoStatus" precision="0" suboid="videoStatus" type="INT16" value="0" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
+               <subparam access="1" constrainttype="INT_CHOICE" name="audioStatus" precision="0" suboid="audioStatus" type="INT16" value="1" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
+               <subparam access="1" constrainttype="INT_CHOICE" name="handRaised" precision="0" suboid="handRaised" type="INT16" value="0" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
+               <subparam access="1" constrainttype="INT_CHOICE" name="isSpeaking" precision="0" suboid="isSpeaking" type="INT16" value="0" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
+               <subparam access="1" constrainttype="INT_NULL" name="lastSpoke" precision="0" suboid="lastSpoke" type="INT32" value="0" widget="default"/>
+            </value>
+            <value>
+               <subparam suboid="targetIndex" value="-1"/>
+               <subparam suboid="userName" value="Bo Cordle"/>
+               <subparam suboid="galleryIndex" value="0"/>
+               <subparam suboid="zoomID" value="16779264"/>
+               <subparam suboid="targetCount" value="-1"/>
+               <subparam suboid="listCount" value="-1"/>
+               <subparam suboid="userRole" value="0"/>
+               <subparam suboid="userStatus" value="0"/>
+               <subparam suboid="videoStatus" value="1"/>
+               <subparam suboid="audioStatus" value="1"/>
+               <subparam suboid="handRaised" value="0"/>
+               <subparam suboid="isSpeaking" value="1"/>
+               <subparam suboid="lastSpoke" value="2147483647"/>
+            </value>
+         </param>
+      </params>
+      <api>function callback(resultStr)
+           {
+              if (resultStr != null)
+              {
+                 var json = JSON.parse(resultStr);
+                 var a = null;
+                 if (Array.isArray(json))
+                 {
+                    a = json;
+                 } else {
+                    a = [];
+                    a.push(json);
+                 }
+                 params.setAllValues('struct-data', a);
+             }
+         }
+
+function handleUser(resultStr)
+  {
+     if (resultStr != null)
+     {
+        var json = JSON.parse(resultStr);
+        var a = null;
+        if (Array.isArray(json))
+        {
+           a = json;
+        } else {
+           a = [];
+           a.push(json);
+        }
+        params.setAllValues('struct-data', a);
+    }
+}</api>
+      <listener autostart="true" delimitertype="newline" listenport="7799">
+         <task tasktype="ogscript">if (event.isConnectEvent()) {
+   ogscript.debug("connection established");
+}
+
+if (event.isMessageEvent())
+{
+   ogscript.debug("message received");
+
+   var message = "&lt;html&gt;"
+   var message = message + "host: " + event.getRemoteHost();
+   var message = message + "&lt;br&gt;port: " + event.getRemotePort();
+   var message = message + "&lt;br&gt;string: " + event.getBytesAsString();
+   var message = message + "&lt;br&gt;bytes: " + event.getBytes();
+   var message = message + "&lt;/html&gt;"
+   ogscript.rename("eventString", message);  
+   handleUser(event.getBytesAsString());
+}
+
+if (event.isDisconnectEvent()) {
+   ogscript.debug("connection closed");
+}</task>
+      </listener>
+   </meta>
+   <param expand="true" height="61" left="248" oid="Data_URL" right="17" top="20" widget="file-picker">
+      <task tasktype="ogscript">params.resetAllValues('struct-data');
+         ogscript.asyncPost(params.getValue('Data_URL', 0), null, callback);</task>
+   </param>
+   <param bottom="476" expand="true" left="14" oid="struct-data" right="14" showlabel="false" top="94"/>
+   <label height="38" left="18" name="File URL: " style="txt-align:east" top="29" width="223"/>
+   <abs height="294" left="49" style="bg#dark;" top="525" width="891">
+      <label height="20" left="20" name="Received:" style="txt-align:west" top="20" width="160"/>
+      <label height="80" id="eventString" left="120" style="txt-align:west;" top="20" width="580"/>
+   </abs>
+   <button buttontype="push" height="40" left="107" top="857" width="276">
+      <task tasktype="ogscript"/>
+      <task tasktype="ogscript">generateTableRows(params.getValue(struct-data));</task>
+   </button>
+</abs>

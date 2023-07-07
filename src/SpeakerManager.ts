@@ -1,29 +1,27 @@
 import { EventEmitter } from 'events';
-import { RossUser } from './RossUser';
+import { User } from './User';
 const { Zosc } = require('./Zosc');
 
 class SpeakerManager extends EventEmitter {
-    private zosc: typeof Zosc;
-    private speakers: { [key: number]: RossUser } = {};
-    private speaker: RossUser | null = null;
+    zosc: typeof Zosc;
+    speaker: User | null = null;
     private recentSpeakers: { [key: number]: string } = {};
     private recentSpeakersMaxSize: number = 10;
-    private currentSpeaker: RossUser | null = null;
+    private currentSpeaker: User | null = null;
     private isSwitchWaiting: boolean = false;
-    private nextSpeaker: RossUser | null = null;
+    private nextSpeaker: User | null = null;
     private lastSwitch: number = 0;
     private switchTimeout: number = 1000;
 
     constructor(zosc: typeof Zosc, switchTimeout: number) {
       super();
       this.zosc = zosc;
-      this.speakers = zosc.users;
       this.switchTimeout = switchTimeout;
       console.log('SpeakerManager initialized with switchTimeout: ' + this.switchTimeout);
     }
 
   // Keep track of the last 10 speakers
-  private addToRecentSpeakers(speaker: RossUser): void {
+  private addToRecentSpeakers(speaker: User): void {
     if (Object.keys(this.recentSpeakers).length >= this.recentSpeakersMaxSize) {
       const oldestKey = Object.keys(this.recentSpeakers)[0];
       delete this.recentSpeakers[oldestKey];
@@ -32,7 +30,7 @@ class SpeakerManager extends EventEmitter {
   }
   
 
-  public triggerSwitch(speaker:RossUser | null): void {
+  public triggerSwitch(speaker:User | null): void {
     if (speaker === undefined || speaker === null) {
         console.log('No speaker provided to triggerSwitch(). Bailing.');
         return;
@@ -73,14 +71,15 @@ class SpeakerManager extends EventEmitter {
     let timeSinceLastSwitch = currentTime - this.lastSwitch;
     console.log('Time since last switch: ' + timeSinceLastSwitch);
     // Check to see if speaker is already in the speakers array
-    if (!this.speakers[activeSpeakerID]) {
+    if (!this.zosc.users[activeSpeakerID]) {
         console.log('Speaker not found. Adding SpeakerID: ' + activeSpeakerID);
-        this.speaker = this.speakers[activeSpeakerID];
+        this.speaker = this.zosc.users[activeSpeakerID];
+        this.speaker.lastSpoke = Date.now(); // Set the lastSpoke property of the speaker to the current time
     // console.log('Speaker added: ' + activeSpeakerID);
     }
     else {
         console.log('Speaker found: ' + activeSpeakerID);
-        this.speaker = this.speakers[activeSpeakerID];
+        this.speaker = this.zosc.users[activeSpeakerID];
     }
     // Check if a switch is not pending, the switch timeout has passed, and the speaker is different from the current speaker
     if (this.speaker !== this.currentSpeaker){

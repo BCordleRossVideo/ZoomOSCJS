@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><abs contexttype="opengear" id="_top">
+   <meta>
+      <params>
+         <param access="1" maxlength="0" name="Data URL" oid="Data_URL" stateless="true" type="STRING" value="" widget="text"/>
+         <param access="1" name="Structured Data" oid="struct-data" stateless="true" type="STRUCT_ARRAY" widget="table">
+            <value>
+               <subparam access="1" constrainttype="INT_NULL" name="targetIndex" precision="0" stateless="true" suboid="targetIndex" type="INT32" value="-1" widget="default"/>
+               <subparam access="1" maxlength="0" name="userName" stateless="true" suboid="userName" type="STRING" value="Bo Cordle" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="galleryIndex" precision="0" stateless="true" suboid="galleryIndex" type="INT32" value="-1" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="zoomID" precision="0" stateless="true" suboid="zoomID" type="INT32" value="16779264" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="targetCount" precision="0" stateless="true" suboid="targetCount" type="INT32" value="0" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="listCount" precision="0" stateless="true" suboid="listCount" type="INT32" value="2" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="userRole" precision="0" stateless="true" suboid="userRole" type="INT32" value="1" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="userStatus" precision="0" stateless="true" suboid="userStatus" type="INT32" value="1" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="videoStatus" precision="0" stateless="true" suboid="videoStatus" type="INT32" value="1" widget="default"/>
+               <subparam access="1" constrainttype="INT_CHOICE" name="audioStatus" precision="0" stateless="true" suboid="audioStatus" type="INT16" value="1" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
+               <subparam access="1" constrainttype="INT_NULL" name="handRaised" precision="0" stateless="true" suboid="handRaised" type="INT32" value="0" widget="default"/>
+               <subparam access="1" constrainttype="INT_CHOICE" name="isSpeaking" precision="0" stateless="true" suboid="isSpeaking" type="INT16" value="1" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
+               <subparam access="1" maxlength="-1" name="lastSpoke" stateless="true" suboid="lastSpoke" type="STRING" value="6:08:42:303" widget="default"/>
+               <subparam access="1" constrainttype="INT_NULL" name="videoInput" precision="0" stateless="true" suboid="videoInput" type="INT32" value="2" widget="default"/>
+               <subparam access="1" maxlength="-1" name="lastSwitch" stateless="true" suboid="lastSwitch" type="STRING" value="6:08:33:056" widget="default"/>
+            </value>
+            <value>
+               <subparam stateless="true" suboid="targetIndex" value="-1"/>
+               <subparam stateless="true" suboid="userName" value="Bo Cordle iPhone"/>
+               <subparam stateless="true" suboid="galleryIndex" value="0"/>
+               <subparam stateless="true" suboid="zoomID" value="16780288"/>
+               <subparam stateless="true" suboid="targetCount" value="0"/>
+               <subparam stateless="true" suboid="listCount" value="1"/>
+               <subparam stateless="true" suboid="userRole" value="1"/>
+               <subparam stateless="true" suboid="userStatus" value="0"/>
+               <subparam stateless="true" suboid="videoStatus" value="0"/>
+               <subparam stateless="true" suboid="audioStatus" value="0"/>
+               <subparam stateless="true" suboid="handRaised" value="0"/>
+               <subparam stateless="true" suboid="isSpeaking" value="0"/>
+               <subparam stateless="true" suboid="lastSpoke" value="6:05:25:803"/>
+               <subparam stateless="true" suboid="videoInput" value="0"/>
+               <subparam stateless="true" suboid="lastSwitch" value="6:05:23:806"/>
+            </value>
+            <value>
+               <subparam suboid="targetIndex" value="-1"/>
+               <subparam suboid="userName" value="Bo Cordle"/>
+               <subparam suboid="galleryIndex" value="0"/>
+               <subparam suboid="zoomID" value="16781312"/>
+               <subparam suboid="targetCount" value="0"/>
+               <subparam suboid="listCount" value="2"/>
+               <subparam suboid="userRole" value="1"/>
+               <subparam suboid="userStatus" value="1"/>
+               <subparam suboid="videoStatus" value="1"/>
+               <subparam suboid="audioStatus" value="1"/>
+               <subparam suboid="handRaised" value="0"/>
+               <subparam suboid="isSpeaking" value="0"/>
+               <subparam suboid="videoInput" value="1"/>
+               <subparam suboid="lastSpoke" value="6:08:29:806"/>
+               <subparam suboid="lastSwitch" value="6:08:27:561"/>
+            </value>
+         </param>
+      </params>
+      <api>function callback(resultStr)
+           {
+              if (resultStr != null)
+              {
+                 var json = JSON.parse(resultStr);
+                 var a = null;
+                 if (Array.isArray(json))
+                 {
+                    a = json;
+                 } else {
+                    a = [];
+                    a.push(json);
+                 }
+                 params.setAllValues('struct-data', a);
+             }
+         }
+
+function handleUser(resultStr) {
+    if (resultStr != null) {
+        var json = JSON.parse(resultStr);
+        var a = params.getAllValues('struct-data'); // Get the current 'struct-data'
+        
+        // Ensure that 'a' is an array
+        if (!(a instanceof Array)) {
+            ogscript.debug("It's not an array!");
+            a = [];
+        }
+        
+        // Check if type is 'list'
+        if (json.type === 'list') {
+            // In this case, json.data should be the array
+            a = json.data;
+        } 
+        else if (json.type === 'single') {
+            // In this case, json.data should be a single user object
+            // Ensure that json.data has a zoomID property
+            if (json.data &amp;&amp; json.data.zoomID) {
+                // Find the user in the array
+                var index = -1;
+                for (var i = 0; i &lt; a.length; i++) {
+                  ogscript.debug("Trying to match " + params.getValue('struct-data.' + i + '.zoomID', 0) + " with " + json.data.zoomID + " at index " + i);
+                    if (params.getValue('struct-data.' + i + '.zoomID', 0) === json.data.zoomID) {
+                        index = i;
+                        ogscript.debug("Found at :" + i);
+                        break;
+                    }
+                }
+                // If the user was found, update it
+                if (index !== -1) {
+                    a[index] = json.data;
+                } else {
+                    // If the user was not found, add it
+                    ogscript.debug("Not found? Trying to add it.");
+                    a.push(json.data);
+                }
+            }
+        }
+        else if (json instanceof Array) {
+            a = json;
+        } else {
+            a = [];
+            a.push(json);
+        }
+
+        params.setAllValues('struct-data', a);
+    }
+}
+
+</api>
+      <listener autostart="true" delimitertype="newline" listenport="7799">
+         <task tasktype="ogscript">if (event.isConnectEvent()) {
+   ogscript.debug("connection established");
+}
+
+if (event.isMessageEvent())
+{
+   handleUser(event.getBytesAsString());
+   ogscript.debug(event.getBytesAsString());
+}
+
+if (event.isDisconnectEvent()) {
+   ogscript.debug("connection closed");
+}</task>
+      </listener>
+   </meta>
+   <param expand="true" height="61" left="248" oid="Data_URL" right="17" top="20" widget="file-picker">
+      <task tasktype="ogscript">params.resetAllValues('struct-data');
+         ogscript.asyncPost(params.getValue('Data_URL', 0), null, callback);</task>
+   </param>
+   <param bottom="476" expand="true" left="14" oid="struct-data" right="14" showlabel="false" top="94"/>
+   <label height="38" left="18" name="File URL: " style="txt-align:east" top="29" width="223"/>
+   <abs height="294" left="49" style="bg#dark;" top="525" width="891">
+      <label height="20" left="20" name="Received:" style="txt-align:west" top="20" width="160"/>
+      <label height="191" id="eventString" left="102" style="txt-align:west;" top="36" width="757"/>
+   </abs>
+   <button buttontype="push" height="40" left="107" top="857" width="276">
+      <task tasktype="ogscript"/>
+      <task tasktype="ogscript">generateTableRows(params.getValue(struct-data));</task>
+   </button>
+</abs>

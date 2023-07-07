@@ -32,7 +32,12 @@ export default class Zosc extends EventEmitter {
     handleUpdate(message: [string, ...ArgumentType[]]){
         console.log("Message Received Zosc.ts: " + message);
         let spliturl = message[0].split("/");
-        let prefix = spliturl[1]; 
+        let prefix = spliturl[1];
+        //handle meeting Actions
+        if(spliturl[2] == 'listCleared'){
+                this.users = {};
+                console.log("New list of users received");
+        }
         //handle user Actions
         if(spliturl[2] == 'user'||spliturl[2] == 'me'){
             let zoomID = parseInt(<string>message[4]);
@@ -47,6 +52,11 @@ export default class Zosc extends EventEmitter {
             }
             if(UserCommands.includes(action)){
                 this.users[zoomID].handleUpdate(action,message);
+            }
+            if(action == 'offline'){
+                delete this.users[zoomID];
+                this.emit("usersUpdated");
+                console.log("User " + zoomID + " has left the meeting");
             }
         }
         //this.printAllUsers();
@@ -169,22 +179,45 @@ export default class Zosc extends EventEmitter {
     broadcastToBreakout(message){
         this.sendZoomCommand("broadcastToBreakout",message);
     }
-    printAllUsers() {
-        // Create an array from the users object with zoomID as key
-        const usersArray = Object.entries(this.users).map(([zoomID, user]) => ({zoomID, user}));
+    list(){
+        this.sendZoomCommand("list");
+    }
+    JSONUser(user) {
+        const result = {
+            type: "single",
+            data: user.toJSON()
+        };
     
+        // Log a JSON string of the object
+        return JSON.stringify(result);
+    }
+    
+    JSONAllUsers() {
+        // Create an array from the users object with zoomID as key
+        const usersArray = Object.entries(this.users).map(([zoomID, user]) => user);
+    
+        // Wrap usersArray in another object with a type parameter
+        const result = {
+            type: "list",
+            data: usersArray
+        };
+    
+        // Log a JSON string of the object
+        return JSON.stringify(result);
+    }
+    printAllUsers() {
         // Log a JSON string of the array
-        console.log(JSON.stringify(usersArray, null, 2));
+        console.log(this.JSONAllUsers());
     }
     printAllUsersToFile() {
         // Create an array from the users object with zoomID as key
-        const usersArray = Object.entries(this.users).map(([zoomID, user]) => ({zoomID, user}));
+        const usersArray = Object.entries(this.users).map(([zoomID, user]) => user);
     
         // Convert to JSON
         const jsonData = JSON.stringify(usersArray, null, 2);
     
         // Write to a file
-        fs.writeFile('users.json', jsonData, (err) => {
+        fs.writeFile('./Data/users.json', jsonData, (err) => {
             if (err) {
                 console.log('Error writing file', err)
             } else {

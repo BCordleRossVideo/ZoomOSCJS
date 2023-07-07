@@ -12,12 +12,18 @@
                <subparam access="1" constrainttype="INT_NULL" name="listCount" precision="0" stateless="true" suboid="listCount" type="INT32" value="2" widget="default"/>
                <subparam access="1" constrainttype="INT_NULL" name="userRole" precision="0" stateless="true" suboid="userRole" type="INT32" value="1" widget="default"/>
                <subparam access="1" constrainttype="INT_NULL" name="userStatus" precision="0" stateless="true" suboid="userStatus" type="INT32" value="1" widget="default"/>
-               <subparam access="1" constrainttype="INT_NULL" name="videoStatus" precision="0" stateless="true" suboid="videoStatus" type="INT32" value="1" widget="default"/>
+               <subparam access="1" constrainttype="INT_CHOICE" name="videoStatus" precision="0" stateless="true" suboid="videoStatus" type="INT16" value="1" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
                <subparam access="1" constrainttype="INT_CHOICE" name="audioStatus" precision="0" stateless="true" suboid="audioStatus" type="INT16" value="1" widget="toggle">
                   <constraint key="0">No</constraint>
                   <constraint key="1">Yes</constraint>
                </subparam>
-               <subparam access="1" constrainttype="INT_NULL" name="handRaised" precision="0" stateless="true" suboid="handRaised" type="INT32" value="0" widget="default"/>
+               <subparam access="1" constrainttype="INT_CHOICE" name="handRaised" precision="0" stateless="true" suboid="handRaised" type="INT16" value="0" widget="toggle">
+                  <constraint key="0">No</constraint>
+                  <constraint key="1">Yes</constraint>
+               </subparam>
                <subparam access="1" constrainttype="INT_CHOICE" name="isSpeaking" precision="0" stateless="true" suboid="isSpeaking" type="INT16" value="1" widget="toggle">
                   <constraint key="0">No</constraint>
                   <constraint key="1">Yes</constraint>
@@ -130,7 +136,45 @@ function handleUser(resultStr) {
     }
 }
 
-</api>
+function fillZoomUserTable(){
+   var output = '&lt;table bottom="5" left="1" right="5" top="2"&gt;\n';
+   output += '\t&lt;tr fill="both"&gt;\n\t&lt;label colspan="5" fill="both" header="true" name="Label Row" style="bg-fill:both;"/&gt;\n\t&lt;/tr&gt;\n';
+   var count = params.getElementCount('struct-data');
+   for (var i = 0; i &lt; params.getElementCount('struct-data'); i ++ ) {
+      output += '\t&lt;tr&gt;';
+      output += '\t\t&lt;param fill="both" style="align:left" expand="true" oid="struct-data.' + i + '.userName" widget="3"&gt;&lt;task type="ogscript"&gt;ogscript.debug("Param Changed.");&lt;/task&gt;&lt;/param&gt;\n';
+      output += '\t\t&lt;param fill="both" style="align:left" expand="true" oid="struct-data.' + i + '.zoomID" widget="label"/&gt;\n';
+      //Mute/Unmute Toggle Here
+      output += '\t\t&lt;abs fill="both" style="bg#FFFFFF;" left="2" right="2" bottom="2" top="2"&gt;&lt;param expand="true" left="0" right="0" bottom="0" top="0" editable="false" id="user.' + i + '.audioStatus" oid="struct-data.' + i + '.audioStatus" ';
+      output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/UnMuted.png;f:bg-u:Images/Muted.png;"/&gt;\n';
+      output += '\t\t&lt;button buttontype="push" left="2" right="2" bottom="2" top="2" id="clickit" name="" style="bg-fill:none;bg#00000000;fg#00000000;"&gt;\n';
+      output += '\t\t\t&lt;task tasktype="ogscript"&gt;ogscript.debug("Here is where I need to toggleMute(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ')")&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
+      //Hand Raised Toggle Here
+      output += '\t\t&lt;abs fill="both" style="bg#000000;"&gt;&lt;param expand="true" left="2" right="2" bottom="2" top="2" editable="false" id="user.' + i + '.handRaised" oid="struct-data.' + i + '.handRaised" ';
+      output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;"/&gt;\n';
+      output += '\t\t&lt;button buttontype="push" left="2" right="2" bottom="2" top="2" id="clickit" name="" style="bg-fill:none;bg#00000000;fg#00000000;"&gt;\n';
+      output += '\t\t\t&lt;task tasktype="ogscript"&gt;ogscript.debug("Here is where I need to toggleHand(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ')")&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
+      //Video Status Toggle Here
+      output += '\t\t&lt;abs fill="both" style="bg#000000;"&gt;&lt;param expand="true" left="2" right="2" bottom="2" top="2" editable="false" id="user.' + i + '.videoStatus" oid="struct-data.' + i + '.videoStatus" ';
+      output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;"/&gt;\n';
+      output += '\t\t&lt;button buttontype="push" left="2" right="2" bottom="2" top="2" id="clickit" name="" style="bg-fill:none;bg#00000000;fg#00000000;"&gt;\n';
+      output += '\t\t\t&lt;task tasktype="ogscript"&gt;ogscript.debug("Here is where I need to toggleVideoStatus(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ')")&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
+      //
+      output += '\t\t&lt;param expand="true" right="0" bottom="0" left="0" top="0" editable="false" id="user.' + i + '.audioStatus" oid="struct-data.' + i + '.audioStatus" ';
+      output += 'style="style:toggleButton;o#00000000;t:bg-u:Images/UnMuted.png;t:bg#8F8F8F;t:bg-fill:fit;t:look:flat;t:fg#00000000;f:bg-u:Images/Muted.png;f:bg#1A1A1A;"/&gt;\n';
+      output += '\t\t&lt;dropspot colspan="1" fill="both" rowspan="1" weightx="1.0" weighty="1.0"/&gt;\n';
+      output += '\t&lt;/tr&gt;\n';
+   }
+   output += '&lt;/table&gt;';
+   ogscript.debug('Output is: ' + output);
+   ogscript.setXml('zoomUserTable', output);
+}
+
+function startup(){
+   fillZoomUserTable();
+}
+
+startup();</api>
       <listener autostart="true" delimitertype="newline" listenport="7799">
          <task tasktype="ogscript">if (event.isConnectEvent()) {
    ogscript.debug("connection established");
@@ -139,7 +183,7 @@ function handleUser(resultStr) {
 if (event.isMessageEvent())
 {
    handleUser(event.getBytesAsString());
-   ogscript.debug(event.getBytesAsString());
+   //ogscript.debug(event.getBytesAsString());
 }
 
 if (event.isDisconnectEvent()) {
@@ -151,14 +195,24 @@ if (event.isDisconnectEvent()) {
       <task tasktype="ogscript">params.resetAllValues('struct-data');
          ogscript.asyncPost(params.getValue('Data_URL', 0), null, callback);</task>
    </param>
-   <param bottom="476" expand="true" left="14" oid="struct-data" right="14" showlabel="false" top="94"/>
+   <param bottom="644" expand="true" left="14" oid="struct-data" right="14" showlabel="false" top="94"/>
    <label height="38" left="18" name="File URL: " style="txt-align:east" top="29" width="223"/>
    <abs height="294" left="49" style="bg#dark;" top="525" width="891">
       <label height="20" left="20" name="Received:" style="txt-align:west" top="20" width="160"/>
       <label height="191" id="eventString" left="102" style="txt-align:west;" top="36" width="757"/>
    </abs>
    <button buttontype="push" height="40" left="107" top="857" width="276">
-      <task tasktype="ogscript"/>
-      <task tasktype="ogscript">generateTableRows(params.getValue(struct-data));</task>
+      <task tasktype="ogscript">fillZoomUserTable();
+
+</task>
    </button>
+<abs contentfunction="fillZoomUserTable" height="198" id="zoomUserTable" left="15" name="zoomUserTable" scroll="true" style="bdr:etched;" top="324" width="1217"/>
+   <abs height="86" left="414" top="844" width="190">
+      <param bottom="5" expand="true" left="5" oid="struct-data.0.audioStatus" right="5" style="style:toggleButton;" top="5"/>
+      <button bottom="2" buttontype="push" id="clickit" left="2" name="" right="2" style="grid#00000000;bdr#00000000;fg#00000000;overlay:none;bg#FFFFFF00;" top="2">
+         <task tasktype="ogscript">ogscript.debug("Here is where I need to toggleMute(16780288)")</task>
+      </button>
+   </abs>
+   <param expand="true" height="86" left="624" oid="struct-data.0.audioStatus" style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/UnMuted.png;f:bg-u:Images/Muted.png;" top="845" width="86"/>
+   <param expand="true" height="86" left="741" oid="struct-data.0.audioStatus" style="bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;" top="846" width="86"/>
 </abs>

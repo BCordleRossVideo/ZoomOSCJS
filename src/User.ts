@@ -17,6 +17,8 @@ export class User extends EventEmitter {
     isSpeaking:boolean = false;
     zosc:Zosc|Ziso;
     lastSpoke: number = 0;
+    videoInput: number | null = null;
+    lastSwitch: number = 0;
     constructor(zosc:Zosc,zoomID:number,userName:string) {
         super();
         this.zoomID = zoomID;
@@ -90,6 +92,10 @@ export class User extends EventEmitter {
                 //todo should we store which questions where asked ?
                 this.emit("askedQuestion",data[5]);
                 break;
+            case "offline":
+                //todo should we store which questions where asked ?
+                this.emit("askedQuestion",data[5]);
+                break;
             case "list":
                 this.targetCount = data[5];
                 this.listCount = data[6];
@@ -105,6 +111,7 @@ export class User extends EventEmitter {
                 
                 break;
         }
+        this.emit("userUpdated",this);
     }
     videoOn(){
         this.sendCommand("videoOn");
@@ -242,6 +249,19 @@ export class User extends EventEmitter {
         this.zosc.sendCommand(command,this,data);
     }
     toJSON() {
+        // Function to convert timestamp to local time in HH:MM:SS:mm format
+        function convertToTime(timestamp) {
+            var date = new Date(timestamp);
+            var hours = date.getHours();
+            var minutes = "0" + date.getMinutes();
+            var seconds = "0" + date.getSeconds();
+            var milliseconds = "00" + date.getMilliseconds();
+    
+            return hours + ':' 
+                 + minutes.substr(-2) + ':' 
+                 + seconds.substr(-2) + ':' 
+                 + milliseconds.substr(-3);
+        }
         return {
             targetIndex: this.targetIndex,
             userName: this.userName,
@@ -255,7 +275,9 @@ export class User extends EventEmitter {
             audioStatus: this.audioStatus,
             handRaised: this.handRaised,
             isSpeaking: this.isSpeaking,
-            lastSpoke: this.lastSpoke,
+            videoInput: this.videoInput,
+            lastSpoke: convertToTime(this.lastSpoke),
+            lastSwitch: convertToTime(this.lastSwitch),
             // Do not include zosc property
         };
     }

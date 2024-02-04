@@ -22,6 +22,18 @@ const speakerManager = new SpeakerManager(zosc, 1000);
 
 var zoscHttp = new ZoscHttp(zosc, 3000);
 
+var switcherOn = true;
+
+zoscHttp.on('switcherOn', () => {
+    switcherOn = true;
+    console.log('Active Speaker Switcher is on');
+});
+
+zoscHttp.on('switcherOff', () => {
+    switcherOn = false;
+    console.log('Active Speaker Switcher is off');
+});
+
 zosc.list();
 
 zosc.on("newUser",(user)=>{
@@ -31,7 +43,9 @@ zosc.on("newUser",(user)=>{
         // let userCopy = { ...user };
         // delete userCopy.zosc;
         // console.log("User: " + JSON.stringify(userCopy, null, 2));
-        speakerManager.requestSwitch(user.zoomID);
+        if (switcherOn) {
+            speakerManager.requestSwitch(user.zoomID);
+        }
     });
     user.on("userUpdated",(user)=>{
         console.log("User Updated received for " + user.userName);

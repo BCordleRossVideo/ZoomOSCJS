@@ -50,23 +50,24 @@
                <subparam stateless="true" suboid="lastSwitch" value="6:05:23:806"/>
             </value>
             <value>
-               <subparam suboid="targetIndex" value="-1"/>
-               <subparam suboid="userName" value="Bo Cordle"/>
-               <subparam suboid="galleryIndex" value="0"/>
-               <subparam suboid="zoomID" value="16781312"/>
-               <subparam suboid="targetCount" value="0"/>
-               <subparam suboid="listCount" value="2"/>
-               <subparam suboid="userRole" value="1"/>
-               <subparam suboid="userStatus" value="1"/>
-               <subparam suboid="videoStatus" value="1"/>
-               <subparam suboid="audioStatus" value="1"/>
-               <subparam suboid="handRaised" value="0"/>
-               <subparam suboid="isSpeaking" value="0"/>
-               <subparam suboid="videoInput" value="1"/>
-               <subparam suboid="lastSpoke" value="6:08:29:806"/>
-               <subparam suboid="lastSwitch" value="6:08:27:561"/>
+               <subparam stateless="true" suboid="targetIndex" value="-1"/>
+               <subparam stateless="true" suboid="userName" value="Bo Cordle"/>
+               <subparam stateless="true" suboid="galleryIndex" value="0"/>
+               <subparam stateless="true" suboid="zoomID" value="16781312"/>
+               <subparam stateless="true" suboid="targetCount" value="0"/>
+               <subparam stateless="true" suboid="listCount" value="2"/>
+               <subparam stateless="true" suboid="userRole" value="1"/>
+               <subparam stateless="true" suboid="userStatus" value="1"/>
+               <subparam stateless="true" suboid="videoStatus" value="1"/>
+               <subparam stateless="true" suboid="audioStatus" value="1"/>
+               <subparam stateless="true" suboid="handRaised" value="0"/>
+               <subparam stateless="true" suboid="isSpeaking" value="0"/>
+               <subparam stateless="true" suboid="videoInput" value="1"/>
+               <subparam stateless="true" suboid="lastSpoke" value="6:08:29:806"/>
+               <subparam stateless="true" suboid="lastSwitch" value="6:08:27:561"/>
             </value>
          </param>
+         <param access="1" maxlength="0" name="Zosc Server" oid="Zosc_Server" type="STRING" value="10.10.80.21" widget="text"/>
       </params>
       <api>function callback(resultStr)
            {
@@ -141,14 +142,14 @@ function fillZoomUserTable(){
    output += '\t&lt;tr fill="both"&gt;\n\t&lt;label colspan="5" fill="both" header="true" name="Label Row" style="bg-fill:both;"/&gt;\n\t&lt;/tr&gt;\n';
    var count = params.getElementCount('struct-data');
    for (var i = 0; i &lt; params.getElementCount('struct-data'); i ++ ) {
-      output += '\t&lt;tr&gt;';
+      output += '\t&lt;tr fill="horzontal" anchor="north" maxh="25"&gt;';
       output += '\t\t&lt;param fill="both" style="align:left" expand="true" oid="struct-data.' + i + '.userName" widget="3"&gt;&lt;task type="ogscript"&gt;ogscript.debug("Param Changed.");&lt;/task&gt;&lt;/param&gt;\n';
       output += '\t\t&lt;param fill="both" style="align:left" expand="true" oid="struct-data.' + i + '.zoomID" widget="label"/&gt;\n';
       //Mute/Unmute Toggle Here
       output += '\t\t&lt;abs fill="both" style="bg#FFFFFF;" left="2" right="2" bottom="2" top="2"&gt;&lt;param expand="true" left="0" right="0" bottom="0" top="0" editable="false" id="user.' + i + '.audioStatus" oid="struct-data.' + i + '.audioStatus" ';
       output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/UnMuted.png;f:bg-u:Images/Muted.png;"/&gt;\n';
       output += '\t\t&lt;button buttontype="push" left="2" right="2" bottom="2" top="2" id="clickit" name="" style="bg-fill:none;bg#00000000;fg#00000000;"&gt;\n';
-      output += '\t\t\t&lt;task tasktype="ogscript"&gt;ogscript.debug("Here is where I need to toggleMute(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ')")&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
+      output += '\t\t\t&lt;task tasktype="ogscript"&gt;toggleMute(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ');&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
       //Hand Raised Toggle Here
       output += '\t\t&lt;abs fill="both" style="bg#000000;"&gt;&lt;param expand="true" left="2" right="2" bottom="2" top="2" editable="false" id="user.' + i + '.handRaised" oid="struct-data.' + i + '.handRaised" ';
       output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;"/&gt;\n';
@@ -159,15 +160,31 @@ function fillZoomUserTable(){
       output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;"/&gt;\n';
       output += '\t\t&lt;button buttontype="push" left="2" right="2" bottom="2" top="2" id="clickit" name="" style="bg-fill:none;bg#00000000;fg#00000000;"&gt;\n';
       output += '\t\t\t&lt;task tasktype="ogscript"&gt;ogscript.debug("Here is where I need to toggleVideoStatus(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ')")&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
+      //Eject Toggle Here
+      output += '\t\t&lt;abs fill="both" style="bg#000000;"&gt;&lt;param expand="true" left="2" right="2" bottom="2" top="2" editable="false" id="user.' + i + '.videoStatus" oid="struct-data.' + i + '.videoStatus" ';
+      output += 'style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;"/&gt;\n';
+      output += '\t\t&lt;button buttontype="push" left="2" right="2" bottom="2" top="2" id="clickit" name="" style="bg-fill:none;bg#00000000;fg#00000000;"&gt;\n';
+      output += '\t\t\t&lt;task tasktype="ogscript"&gt;eject(' + params.getValue('struct-data.' + i + '.zoomID', 0) + ');&lt;/task&gt;\n&lt;/button&gt;&lt;/abs&gt;\n';
       //
       output += '\t\t&lt;param expand="true" right="0" bottom="0" left="0" top="0" editable="false" id="user.' + i + '.audioStatus" oid="struct-data.' + i + '.audioStatus" ';
       output += 'style="style:toggleButton;o#00000000;t:bg-u:Images/UnMuted.png;t:bg#8F8F8F;t:bg-fill:fit;t:look:flat;t:fg#00000000;f:bg-u:Images/Muted.png;f:bg#1A1A1A;"/&gt;\n';
       output += '\t\t&lt;dropspot colspan="1" fill="both" rowspan="1" weightx="1.0" weighty="1.0"/&gt;\n';
       output += '\t&lt;/tr&gt;\n';
    }
+   output += '\t&lt;tr fill="both"&gt;&lt;/tr&gt;\n';
    output += '&lt;/table&gt;';
    ogscript.debug('Output is: ' + output);
    ogscript.setXml('zoomUserTable', output);
+}
+
+function toggleMute(zoomID){
+   ogscript.asyncHTTP("http://127.0.0.1:3000/toggleMute/" + zoomID, "POST", "application/x-www-form-urlencoded", "", null);
+   ogscript.debug("Sent: " + "127.0.0.1:3000/toggleMute/" + zoomID);
+}
+
+function eject(zoomID){
+   ogscript.asyncHTTP("http://127.0.0.1:3000/eject/" + zoomID, "POST", "application/x-www-form-urlencoded", "", null);
+   ogscript.debug("Sent: " + "127.0.0.1:3000/eject/" + zoomID);
 }
 
 function startup(){
@@ -215,4 +232,35 @@ if (event.isDisconnectEvent()) {
    </abs>
    <param expand="true" height="86" left="624" oid="struct-data.0.audioStatus" style="style:toggleButton;bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/UnMuted.png;f:bg-u:Images/Muted.png;" top="845" width="86"/>
    <param expand="true" height="86" left="741" oid="struct-data.0.audioStatus" style="bg#FFFFFF;bg-fill:fit;fg#00000000;t:bg-u:Images/HandRaise.png;f:bg-u:Images/Muted.png;" top="846" width="86"/>
+   <param expand="true" height="36" left="978" oid="Zosc_Server" top="905" width="283"/>
+   <table height="110" left="989" top="622" width="277">
+      <tr>
+         <button buttontype="push" colspan="1" fill="both" height="25" name="Switcher On" rowspan="1" weightx="1.0" weighty="1.0">
+            <task tasktype="ogscript">ogscript.asyncHTTP("http://127.0.0.1:3000/switcherOn", "POST", "application/x-www-form-urlencoded", "", null);</task>
+         </button>
+      </tr>
+      <tr>
+         <button buttontype="push" colspan="1" fill="both" height="25" name="Switcher Off" rowspan="1" weightx="1.0" weighty="1.0">
+            <task tasktype="ogscript">ogscript.asyncHTTP("http://127.0.0.1:3000/switcherOff", "POST", "application/x-www-form-urlencoded", "", null);ogscript.debug("Sent: " + "http://127.0.0.1:3000/switcherOff");</task>
+         </button>
+      </tr>
+      <tr>
+         <button buttontype="push" colspan="1" fill="both" height="25" name="Send List" rowspan="1" weightx="1.0" weighty="1.0">
+            <task tasktype="ogscript">ogscript.asyncHTTP("http://127.0.0.1:3000/list", "POST", "application/x-www-form-urlencoded", "", null);
+   ogscript.debug("Sent: " + "http://127.0.0.1:3000/switcherOff");
+   fillZoomUserTable();</task>
+         </button>
+      </tr>
+   </table>
+   <button buttontype="push" height="22" left="965" top="843" width="238">
+      <task tasktype="ogscript">
+
+
+/*! block id=1000 !*/
+ogscript.asyncHTTP("127.0.0.1:3000/mute/", "POST", "application/x-www-form-urlencoded", "", null);
+/*!!
+ &lt;block id="1000" type="ogscript_async" x="228" y="202" w="318" URL="127.0.0.1:3000/mute/" METHOD="POST" TYPE="application/x-www-form-urlencoded" DATA="" CALLBACK="null" /&gt;
+!!*/
+/*!!&lt;checksum&gt;b41f5026101d603066bb12a8bdad8904&lt;/checksum&gt;!!*/</task>
+   </button>
 </abs>

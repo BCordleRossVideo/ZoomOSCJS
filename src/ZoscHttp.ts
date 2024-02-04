@@ -18,6 +18,18 @@ export default class ZoscHttp extends EventEmitter{
         this.ziso.users[req.params.zoomID].mute();
         res.send('User Muted Successfully.');
       });
+
+    this.app.post('/toggleMute/:zoomID', (req, res) => {
+        console.log("Toggling Mute User: " + req.params.zoomID);
+        this.ziso.users[req.params.zoomID].toggleMute();
+        res.send('User Muted Toggled.');
+    });
+
+    this.app.post('/eject/:zoomID', (req, res) => {
+        console.log("Ejecting User: " + req.params.zoomID);
+        this.ziso.users[req.params.zoomID].eject();
+        res.send('User Ejected.');
+    });
   
     this.app.post('/list', (req, res) => {
         console.log("Sending List Command");
@@ -41,6 +53,16 @@ export default class ZoscHttp extends EventEmitter{
         console.log("Setting Output Framerate to " + req.params.framerate);
         this.ziso.sendZoomCommand('setOutputFramerate',req.params.framerate);
         res.send('setOutputFramerate Sent.');
+    });
+
+    this.app.post('/switcherOn', (req, res) => {
+        this.emit('switcherOn');
+        res.send('switcherOn Received.');
+    });
+
+    this.app.post('/switcherOff', (req, res) => {
+        this.emit('switcherOff');
+        res.send('switcherOn Received.');
     });
 
     this.app.listen(httpPort, () => {
